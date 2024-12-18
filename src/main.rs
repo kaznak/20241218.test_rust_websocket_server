@@ -25,10 +25,22 @@ fn main() {
                     );
                 }
 
-                // 必要であればレスポンス側に追加ヘッダを入れることも可能
-                response
-                    .headers_mut()
-                    .insert("X-Custom-Header", "MyValue".parse().unwrap());
+                // クライアントからのSec-WebSocket-Protocolの値を取得
+                if let Some(protocols) = req.headers().get("Sec-WebSocket-Protocol") {
+                    if let Ok(protocols_str) = protocols.to_str() {
+                        // カンマ区切りで複数のプロトコルが指定される場合がある
+                        let offered_protocols: Vec<&str> =
+                            protocols_str.split(',').map(|s| s.trim()).collect();
+
+                        // "chat" がサポートされていると仮定し、それがofferedされているなら応答に含める
+                        if offered_protocols.contains(&"chat") {
+                            response
+                                .headers_mut()
+                                .insert("Sec-WebSocket-Protocol", "chat".parse().unwrap());
+                            println!("Selected subprotocol: chat");
+                        }
+                    }
+                }
 
                 Ok(response)
             };
