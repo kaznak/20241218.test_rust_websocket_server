@@ -2,6 +2,7 @@
 
 - https://github.com/snapview/tungstenite-rs
 - https://github.com/websockets/wscat
+- https://developer.mozilla.org/ja/docs/Web/HTTP/Protocol_upgrade_mechanism
 
 ## Usage
 
